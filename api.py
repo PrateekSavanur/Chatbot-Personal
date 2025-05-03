@@ -5,6 +5,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
+import os
 
 app = FastAPI()
 
@@ -36,10 +37,13 @@ Question: {question}
 Important: If your response is getting long, make sure to properly conclude it.
 """
 
+groq_api_key = os.getenv("GROQ_API_KEY")
+
 # 🔥 Initialize once at app startup
 embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 model = ChatGroq(
+    api_key=groq_api_key,
     model_name="llama3-8b-8192",
     max_tokens=256,
     temperature=0.4,
