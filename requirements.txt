@@ -10,3 +10,4 @@ numpy<2.0
 fastapi
 uvicorn
 langchain-huggingface
+langchain-chroma 
