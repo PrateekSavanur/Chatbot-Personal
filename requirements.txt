@@ -11,4 +11,3 @@ fastapi
 uvicorn
 langchain-huggingface
 langchain-chroma 
-hf_xet
