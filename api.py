@@ -5,7 +5,6 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
-import os
 
 app = FastAPI()
 
@@ -37,22 +36,26 @@ Question: {question}
 Important: If your response is getting long, make sure to properly conclude it.
 """
 
+# 🔥 Initialize once at app startup
+embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+model = ChatGroq(
+    model_name="llama3-8b-8192",
+    max_tokens=256,
+    temperature=0.4,
+    top_p=0.9
+)
+
 class QueryRequest(BaseModel):
     query_text: str
 
 @app.post("/query")
 async def process_query(request: QueryRequest):
     try:
-        # Load embedding model
-        embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        
-        # Connect to Chroma DB
-        db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
-
         # Perform similarity search
         results = db.similarity_search(request.query_text, k=3)
 
-        if len(results) == 0:
+        if not results:
             return {
                 "response": "Unable to find matching results. Please contact me at prateeksavanur@duck.com.",
                 "sources": []
@@ -66,12 +69,6 @@ async def process_query(request: QueryRequest):
         prompt = prompt_template.format(context=context_text, question=request.query_text)
 
         # Query the model
-        model = ChatGroq(
-            model_name="llama3-8b-8192",
-            max_tokens=256,
-            temperature=0.4,
-            top_p=0.9
-        )
         response_text = model.predict(prompt)
 
         # Collect sources
