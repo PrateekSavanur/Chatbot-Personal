@@ -1,0 +1,9 @@
+langchain
+langchain-groq
+langchain-community
+sentence-transformers
+python-dotenv
+unstructured
+chromadb==0.5.0
+tiktoken==0.7.0
+numpy<2.0
