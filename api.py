@@ -47,7 +47,6 @@ model = ChatGroq(
     model_name="llama3-8b-8192",
     max_tokens=256,
     temperature=0.4,
-    top_p=0.9
 )
 
 class QueryRequest(BaseModel):
