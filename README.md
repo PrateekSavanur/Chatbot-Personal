@@ -1,3 +1,9 @@
-# FastAPI Chatbot with Groq on Hugging Face Spaces
-
-This app runs a FastAPI chatbot using LangChain, Groq, and Chroma vector store.
+---
+title: My Chatbot Space
+emoji: 🤖
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_file: Dockerfile
+pinned: false
+---
