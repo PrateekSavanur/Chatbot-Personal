@@ -1,5 +1,5 @@
 ---
-title: My Chatbot Space
+title: Chatbot
 emoji: 🤖
 colorFrom: indigo
 colorTo: blue
