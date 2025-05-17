@@ -1,18 +1,16 @@
-FROM python:3.10-slim
+FROM python:3.10
+
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
 
 WORKDIR /app
 
-# Copy dependencies
-COPY requirements.txt .
-
+COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app code
-COPY app/ .
+COPY --chown=user app/ .
 
-# Port required by HF Spaces
 EXPOSE 7860
-
-RUN python create_database.py
 
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]

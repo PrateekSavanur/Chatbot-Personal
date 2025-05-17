@@ -6,6 +6,7 @@ from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 import os
+from create_database import main as create_chroma_db
 
 app = FastAPI()
 
@@ -51,6 +52,14 @@ model = ChatGroq(
 
 class QueryRequest(BaseModel):
     query_text: str
+
+@app.on_event("startup")
+async def startup_event():
+    if not os.path.exists("chroma/chroma.sqlite3"):
+        print("Chroma DB not found. Creating now...")
+        create_chroma_db()
+    else:
+        print("Chroma DB already exists. Skipping creation.")
 
 @app.post("/query")
 async def process_query(request: QueryRequest):
