@@ -13,4 +13,6 @@ COPY app/ .
 # Port required by HF Spaces
 EXPOSE 7860
 
+RUN python create_database.py
+
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]
