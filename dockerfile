@@ -1,16 +1,24 @@
-FROM python:3.10
+# Use the official Python 3.10 image
+FROM python:3.10-slim
 
-RUN useradd -m -u 1000 user
-USER user
-ENV PATH="/home/user/.local/bin:$PATH"
-
+# Set working directory inside the container
 WORKDIR /app
 
-COPY --chown=user requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy dependency file first and install requirements
+COPY requirements.txt .
 
-COPY --chown=user app/ .
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
+# Copy all remaining app files
+COPY . .
+
+# Expose the port expected by Hugging Face Spaces
 EXPOSE 7860
 
+# Run ChromaDB initialization before app starts
+# If chroma DB already exists, skip re-creating
+# RUN python create_database.py || echo "Database already exists or creation failed"
+
+# Start the FastAPI app
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]
