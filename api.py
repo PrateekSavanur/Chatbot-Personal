@@ -85,8 +85,3 @@ async def process_query(request: QueryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # use Railway's port or default to 8000
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
-
