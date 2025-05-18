@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from langchain_huggingface import HuggingFaceInferenceAPIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
@@ -40,11 +40,8 @@ Important: If your response is getting long, make sure to properly conclude it.
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 
-embedding_function = HuggingFaceInferenceAPIEmbeddings(
-    api_key=os.getenv("HF_API_KEY"),
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
-
+# 🔥 Initialize once at app startup
+embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 model = ChatGroq(
     api_key=groq_api_key,
