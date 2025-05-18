@@ -53,14 +53,6 @@ model = ChatGroq(
 class QueryRequest(BaseModel):
     query_text: str
 
-@app.on_event("startup")
-async def startup_event():
-    if not os.path.exists("chroma/chroma.sqlite3"):
-        print("Chroma DB not found. Creating now...")
-        create_chroma_db()
-    else:
-        print("Chroma DB already exists. Skipping creation.")
-
 @app.post("/query")
 async def process_query(request: QueryRequest):
     try:
