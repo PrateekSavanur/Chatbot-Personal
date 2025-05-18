@@ -1,7 +1,7 @@
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 import os
@@ -67,7 +67,10 @@ def save_to_chroma(chunks: list[Document]):
         shutil.rmtree(CHROMA_PATH)
 
     db = Chroma.from_documents(
-        chunks, HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"), persist_directory=CHROMA_PATH
+        chunks, HuggingFaceInferenceAPIEmbeddings(
+            api_key=os.getenv("HF_API_KEY"),
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        ), persist_directory=CHROMA_PATH
     )
     db.persist()
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
